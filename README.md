@@ -1,70 +1,87 @@
-# Getting Started with Create React App
+#### 调试源码
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+##### 第一步 ： 创建一个react项目
 
-## Available Scripts
++ 首先通过官方脚手架 create-react-app 创建一个 react 项目，在终端执行以下命令
 
-In the project directory, you can run:
+  ```shell
+  npx create-react-app my-debug-react
+  ```
 
-### `npm start`
++ 暴露`webpack.config.js`配置
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+  ```shell
+  # 会得到一个config文件夹，里面就是react的webpack配置文件
+  cd ./my-debug-react
+  yarn eject 
+  
+  # 出现交互命令选择y即可
+  ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+  <img src="../../../Library/Application%20Support/typora-user-images/image-20211230140135472.png" alt="image-20211230140135472" style="zoom: 50%;" />
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+##### 第二步：修改`react`引用
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+ + 由于 node_modules 中的 react 包是打包好之后的文件，许多代码掺杂在一个文件中，不便于我们对源码进行调试。因此在 my-debug-react 的 src 目录下引入 react 的源码
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```shell
+   # 加me. 是因为我配置了个人github key
+   git clone git clone git@me.github.com:facebook/react.git -b 17.0.2 
+   
+   # 接下来进入到src/react安装依赖
+   cd ./src/react 
+   yarn 
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+ + 修改`webpack.config.js`内`alias`配置，加上如下配置：
 
-### `npm run eject`
+   ```js
+   'react': path.resolve(__dirname, '../src/react/packages/react'),
+   'react-dom': path.resolve(__dirname, '../src/react/packages/react-dom'),
+   'shared': path.resolve(__dirname, '../src/react/packages/shared'),
+   'react-reconciler': path.resolve(__dirname, '../src/react/packages/react-reconciler'),
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+ + 我们将 `__DEV__` 等环境变量默认启用，便于开发调试,修改`config/env.js`,修改为如下配置：
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```js
+   const stringified = {
+   		__DEV__: true,
+   		__PROFILE__: true,
+   		__UMD__: true,
+   		__EXPERIMENTAL__: true,
+   		'process.env': Object.keys(raw).reduce((env, key) => {
+   			env[key] = JSON.stringify(raw[key]);
+   			return env;
+   		}, {}),
+   	};
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+ + 根目录下新建`.eslintrc.json`文件，加入如下配置:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```js
+   {
+   	"extends": "react-app",
+   	"globals": {
+   		"__DEV__": true,
+   		"__PROFILE__": true,
+   		"__UMD__": true,
+   		"__EXPERIMENTAL__": true
+   	}
+   }
+   
+   ```
 
-## Learn More
+ + 在react的入口文件`index.js`中修改`react、react-dom`的引入方式
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```js
+   //import React from 'react';
+   //import ReactDOM from 'react-dom';
+   import * as React from 'react';
+   import * as ReactDOM from 'react-dom';
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
