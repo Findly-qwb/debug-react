@@ -648,7 +648,14 @@ function completeWork(
   renderLanes: Lanes,
 ): Fiber | null {
   const newProps = workInProgress.pendingProps;
-
+  // eslint-disable-next-line react-internal/no-production-logging
+  console.log(
+    'completeWork',
+    'tag:',
+    workInProgress.tag,
+    ' type:',
+    workInProgress.type,
+  );
   switch (workInProgress.tag) {
     case IndeterminateComponent:
     case LazyComponent:

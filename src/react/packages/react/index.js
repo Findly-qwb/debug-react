@@ -37,7 +37,6 @@ export type Interaction = {
 
 // Export all exports so that they're available in tests.
 // We can't use export * from in Flow for some reason.
- // eslint-disable-next-line react-internal/no-production-logging
 console.log(`hello Findly,i'm react`);
 export {
   Children,

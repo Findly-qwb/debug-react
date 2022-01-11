@@ -18,7 +18,6 @@ if (__DEV__) {
  * Base class helpers for the updating state of a component.
  */
 function Component(props, context, updater) {
-  debugger
   this.props = props;
   this.context = context;
   // If a component has string refs, we will assign a different object later.
@@ -28,6 +27,7 @@ function Component(props, context, updater) {
   this.updater = updater || ReactNoopUpdateQueue;
 }
 
+// Steps： 通过isReactComponent来判断是否为ClassComponent
 Component.prototype.isReactComponent = {};
 
 /**

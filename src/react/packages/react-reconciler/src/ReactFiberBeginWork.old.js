@@ -3079,14 +3079,15 @@ function remountFiber(
     );
   }
 }
-
+// Steps：Render阶段是一个递归，‘递’会调用beginWork
 function beginWork(
-  current: Fiber | null,
-  workInProgress: Fiber,
-  renderLanes: Lanes,
+  current: Fiber | null, // 当前组件对应的Fiber节点在上一次更新时的Fiber节点，即workInProgress.alternate
+  workInProgress: Fiber, // 当前组件对应的Fiber节点
+  renderLanes: Lanes, // 优先级定义
 ): Fiber | null {
   const updateLanes = workInProgress.lanes;
-
+   // eslint-disable-next-line react-internal/no-production-logging
+   console.log('beginWork', 'tag:', workInProgress.tag, ' type:', workInProgress.type);
   if (__DEV__) {
     if (workInProgress._debugNeedsRemount && current !== null) {
       // This will restart the begin phase with a new fiber.
@@ -3104,7 +3105,7 @@ function beginWork(
       );
     }
   }
-
+  // 复用逻辑，如果current不为null则是更新阶段  可以复用current
   if (current !== null) {
     const oldProps = current.memoizedProps;
     const newProps = workInProgress.pendingProps;

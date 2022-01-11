@@ -18,7 +18,7 @@
   # 出现交互命令选择y即可
   ```
 
-  <img src="../../../Library/Application%20Support/typora-user-images/image-20211230140135472.png" alt="image-20211230140135472" style="zoom: 50%;" />
+  ![image-20211230140135472](https://raw.githubusercontent.com/dianmaomao/Pic/main/image-20211230140135472.png)
 
 
 
@@ -83,5 +83,61 @@
    import * as ReactDOM from 'react-dom';
    ```
 
+
+
+
+
+##### 最后一步：解决报错 ‼️
+
+> ⚠️ 注意：这些配置修改仅在17.0.2版本（2021-12-30）有效，不敢保证其他版本通用，如果一通配置后还是无法跑通项目，建议百度谷歌
+
++ 添加 `ReactFiberHostConfig` 引用
+
+  + 直接修改`src/react/packages/react-reconciler/src/ReactFiberHostConfig.js`文件
+
+    ```js
+    //import invariant from 'shared/invariant';
+    // invariant(false, 'This module must be shimmed by a specific renderer.');
+    
+    export * from './forks/ReactFiberHostConfig.dom'
+    
+    ```
+
++ 修改`src/react/packages/shared/ReactSharedInternals.js`
+
+  ```js
+  // import * as React from 'react';
+  
+  // const ReactSharedInternals =
+  //   React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+  import ReactSharedInternals from '../react/src/ReactSharedInternals';
+  export default ReactSharedInternals;
+  ```
+
++ 修改 `src/react/packages/shared/invariant.js`
+
+  ```js
+  // 加上condition判断
+  export default function invariant(condition, format, a, b, c, d, e, f) {
+    if (condition) return;
+    throw new Error(
+      'Internal React error: invariant() is meant to be replaced at compile ' +
+        'time. There is no runtime version.',
+    );
+  }
+  
+  ```
+
++ 修改`src/react/.eslintrc.json`文件，主要去除`extends和plugin`的`fbjs`和`react`
+   ![image-20211230145550476](https://raw.githubusercontent.com/dianmaomao/Pic/main/image-20211230145550476.png)
    
++ 另外如果有其他`react-internal`,找到对应的`eslint`规则注释一下就好了
+
+#### 成果
+
+就这样，在一通百度谷歌之后，解决了各种报错问题等疑难杂症之后。我们的调试环境就搭建完成了，可以在 react 源码中通过 `debugger` 打断点或者 `console.log()` 输出日志进行愉快地调试了！
+
+![image-20211230150748962](https://raw.githubusercontent.com/dianmaomao/Pic/main/image-20211230150748962.png)
+
+最后贴一下我搭建的调试环境的 github 地址：[my-debug-react](https://github.com/dianmaomao/debug-react)，不想自己搭建调试环境的话可以直接 clone 我搭好的环境使用。
 

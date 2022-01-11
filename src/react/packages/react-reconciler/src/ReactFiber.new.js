@@ -113,20 +113,21 @@ if (__DEV__) {
 
 let debugCounter = 1;
 
+// Steps: Fiber数据结构
 function FiberNode(
   tag: WorkTag,
   pendingProps: mixed,
   key: null | string,
   mode: TypeOfMode,
 ) {
-  // Instance
-  this.tag = tag;
+  // 做为静态数据结构 保存着组件的相关信息
+  this.tag = tag; // Fiber对应的组件类型 Function/Class/Host
   this.key = key;
   this.elementType = null;
   this.type = null;
-  this.stateNode = null;
+  this.stateNode = null; // Fiber对应的真实DOM节点
 
-  // Fiber
+  // Fiber 信息用于链接其他节点形成fiber树
   this.return = null;
   this.child = null;
   this.sibling = null;
@@ -134,6 +135,7 @@ function FiberNode(
 
   this.ref = null;
 
+  // 作为动态数据 保存本次更新造成的状态改变相关信息
   this.pendingProps = pendingProps;
   this.memoizedProps = null;
   this.updateQueue = null;
@@ -147,6 +149,7 @@ function FiberNode(
   this.subtreeFlags = NoFlags;
   this.deletions = null;
 
+  // 优先级信息
   this.lanes = NoLanes;
   this.childLanes = NoLanes;
 

@@ -1645,6 +1645,7 @@ function renderRootConcurrent(root: FiberRoot, lanes: Lanes) {
 /** @noinline */
 function workLoopConcurrent() {
   // Perform work until Scheduler asks us to yield
+  // TODO: React16更新过程变成可以中断的循环过程
   while (workInProgress !== null && !shouldYield()) {
     performUnitOfWork(workInProgress);
   }

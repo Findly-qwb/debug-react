@@ -146,6 +146,7 @@ function warnIfStringRefCannotBeAutoConverted(config) {
 const ReactElement = function(type, key, ref, self, source, owner, props) {
   const element = {
     // This tag allows us to uniquely identify this as a React Element
+    // Steps：标记这是一个React Element
     $$typeof: REACT_ELEMENT_TYPE,
 
     // Built-in properties that belong on the element
@@ -345,6 +346,7 @@ export function jsxDEV(type, config, maybeKey, source, self) {
  * Create and return a new ReactElement of the given type.
  * See https://reactjs.org/docs/react-api.html#createelement
  */
+// Steps: createElement
 export function createElement(type, config, children) {
   let propName;
 
@@ -422,6 +424,7 @@ export function createElement(type, config, children) {
       }
     }
   }
+  // Steps: 返回ReactElement元素
   return ReactElement(
     type,
     key,
@@ -544,6 +547,7 @@ export function cloneElement(element, config, children) {
  * @return {boolean} True if `object` is a ReactElement.
  * @final
  */
+// Steps: 验证是否为React Element
 export function isValidElement(object) {
   return (
     typeof object === 'object' &&
